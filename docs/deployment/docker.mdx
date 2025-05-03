@@ -71,68 +71,83 @@ git clone https://github.com/DanonekTM/SIMP.git && cd SIMP
 
 ### 2. Build the Docker Image
 
-If a `Dockerfile` is provided:
+Build the image using the provided Dockerfile:
 
 ```bash
 docker build -f docker/Dockerfile -t simp .
 ```
 
-### 3. Prepare Configuration & Volumes
+### 3. Setup Configuration
 
-- Copy and edit `docker/config.yaml` as needed.
-- Copy the files from `docker` and paste them in whichever directory you want to host simp from.
+1. Download the [docker directory](https://github.com/DanonekTM/SIMP/tree/main/docker) contents
+2. Choose a location on your system to host SIMP and place the files there
+3. Verify your directory structure matches the following:
 
-### 4. Run the Backend Container
-
-```bash
-docker run -d \
-  --name simp \
-  -p 3000:3000 \
-  -v $(pwd)/backend/config.yaml:/app/config.yaml \
-  -v $(pwd)/simp_app/storage:/app/storage \
-  -v $(pwd)/simp_app/logs:/app/logs \
-  -v $(pwd)/simp_app/simp.db:/app/simp.db \
-  simp
+```
+.
+├── Dockerfile
+├── README.md
+├── config.yaml
+├── docker-compose.yml
+└── simp_app/
 ```
 
-- Adjust ports and paths as needed.
-- The backend will use the mounted config and persist uploads/logs/database.
+### 4. Deploy with Docker Compose
+
+Start the application:
+
+```bash
+docker compose up -d
+```
+
+Stop the application:
+
+```bash
+docker compose down
+```
+
+The application will be available at http://localhost:3000 by default. All data and configurations will persist in the mounted volumes.
 
 ---
 
-## Option 2: Pull from Docker Hub
+## Option 2: Use Pre-built Image from Docker Hub
 
-If you prefer not to build the image yourself, you can pull a prebuilt image from Docker Hub.
-
-### 1. Pull the Image
+For a quicker setup, you can use our pre-built image from Docker Hub:
 
 ```bash
 docker pull danonektm/simp:latest
 ```
 
-### 2. Prepare Configuration & Volumes
+### 1. Setup Configuration
 
-- Copy and edit `backend/config.yaml` as needed.
-- Create directories for persistent storage and logs:
+1. Download the [docker directory](https://github.com/DanonekTM/SIMP/tree/main/docker) contents
+2. Choose a location on your system to host SIMP and place the files there
+3. Verify your directory structure matches the following:
 
-```bash
-mkdir -p ./simp_app/logs ./simp_app/storage
+```
+.
+├── Dockerfile
+├── README.md
+├── config.yaml
+├── docker-compose.yml
+└── simp_app/
 ```
 
-### 3. Run the Backend Container
+### 2. Deploy with Docker Compose
+
+Start the application:
 
 ```bash
-docker run -d \
-  --name simp \
-  -p 3000:3000 \
-  -v $(pwd)/backend/config.yaml:/app/config.yaml \
-  -v $(pwd)/simp_app/storage:/app/storage \
-  -v $(pwd)/simp_app/logs:/app/logs \
-  -v $(pwd)/simp_app/simp.db:/app/simp.db \
-  danonektm/simp:latest
+docker compose up -d
 ```
 
-- Adjust ports and paths as needed.
+Stop the application:
+
+```bash
+docker compose down
+```
+
+The application will be available at http://localhost:3000 by default. All data and configurations will persist in the mounted volumes.
 
 ---
 
