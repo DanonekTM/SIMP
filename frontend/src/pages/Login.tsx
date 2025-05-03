@@ -11,11 +11,6 @@ const Login = () => {
           </p>
         </div>
         <LoginForm />
-        <p className="text-center text-sm text-muted-foreground">
-          Demo credentials:{" "}
-          <span className="font-semibold">demo@example.com</span> /{" "}
-          <span className="font-semibold">password</span>
-        </p>
       </div>
     </div>
   );

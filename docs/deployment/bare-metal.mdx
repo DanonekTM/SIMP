@@ -1,0 +1,87 @@
+---
+title: Bare Metal Deployment
+description: Deploy S.I.M.P on a physical or virtual server without containers.
+icon: Cpu
+---
+
+# Bare Metal Deployment
+
+This guide explains how to deploy S.I.M.P directly on a Linux server (or VM) without Docker.
+
+## Prerequisites
+
+- Go 1.24+ installed ([download](https://go.dev/dl/))
+- Node.js & npm (for frontend build)
+- SQLite3 (for database)
+- Git
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/DanonekTM/SIMP.git && cd SIMP
+```
+
+## 2. Build the Frontend
+
+```bash
+cd frontend
+npm install
+npm run build
+```
+
+## 3. Move Frontend Build to Backend
+
+```bash
+# Move the generated dist folder to the backend directory
+mv dist ../backend/frontend
+```
+
+## 4. Build the Backend
+
+```bash
+cd ../backend
+go build -o simp-server ./cmd/main.go
+```
+
+## 5. Configure and Run
+
+1. Configure your `config.yaml` file with appropriate settings
+2. Start the server:
+
+```bash
+./simp-server
+```
+
+## 6. (Optional) Set Up as a Systemd Service
+
+Create `/etc/systemd/system/simp.service`:
+
+```ini
+[Unit]
+Description=S.I.M.P Backend
+After=network.target
+
+[Service]
+Type=simple
+User=simp
+WorkingDirectory=/path/to/SIMP/backend
+ExecStart=/path/to/SIMP/backend/simp-server
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable simp
+sudo systemctl start simp
+```
+
+## Security Tips
+
+- Change all default secrets and passwords in `config.yaml`.
+- Use a reverse proxy (e.g., Nginx) for HTTPS and domain routing.
+- Regularly update Go, Node, and S.I.M.P for security patches.

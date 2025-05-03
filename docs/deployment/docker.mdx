@@ -1,0 +1,148 @@
+---
+title: Docker Deployment
+description: Deploy S.I.M.P using Docker containers.
+icon: Container
+---
+
+# Docker Deployment
+
+This guide explains how to deploy S.I.M.P using Docker containers for easy setup and isolation.
+
+## Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) installed
+- (Optional) [Docker Compose](https://docs.docker.com/compose/)
+
+---
+
+## Required Config and Volume Mounts
+
+When running S.I.M.P in Docker, you **must** mount your configuration and persistent data into the container. Here is a recommended `docker-compose` service definition:
+
+```yaml
+services:
+  simp:
+    container_name: simp
+    image: simp:latest
+    ports:
+      - 3000:3000 # Change ports mapped to host
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config.yaml:/app/config.yaml
+      - ./simp_app/logs:/app/logs
+      - ./simp_app/storage:/app/storage
+      - ./simp_app/simp.db:/app/simp.db
+    depends_on:
+      - simp-redis # Optional dependency, comment out if not using Redis
+
+  # Optional Redis service - comment out if not needed
+  simp-redis:
+    container_name: simp-redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+volumes:
+  redis_data:
+```
+
+**Key Mounts:**
+
+- `./config.yaml:/app/config.yaml` — Mounts your config file into the container (required).
+- `./simp_app/logs:/app/logs` — Persists logs on the host.
+- `./simp_app/storage:/app/storage` — Persists uploaded files on the host.
+- `./simp_app/simp.db:/app/simp.db` — Persists the SQLite database on the host.
+- `/etc/localtime:/etc/localtime:ro` — Syncs container time zone with the host (recommended).
+
+> **Note:** If you do not mount these volumes, your data and configuration will not persist between container restarts.
+
+---
+
+## Option 1: Build the Docker Image Locally
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/DanonekTM/SIMP.git && cd SIMP
+```
+
+### 2. Build the Docker Image
+
+If a `Dockerfile` is provided:
+
+```bash
+docker build -f docker/Dockerfile -t simp .
+```
+
+### 3. Prepare Configuration & Volumes
+
+- Copy and edit `docker/config.yaml` as needed.
+- Copy the files from `docker` and paste them in whichever directory you want to host simp from.
+
+### 4. Run the Backend Container
+
+```bash
+docker run -d \
+  --name simp \
+  -p 3000:3000 \
+  -v $(pwd)/backend/config.yaml:/app/config.yaml \
+  -v $(pwd)/simp_app/storage:/app/storage \
+  -v $(pwd)/simp_app/logs:/app/logs \
+  -v $(pwd)/simp_app/simp.db:/app/simp.db \
+  simp
+```
+
+- Adjust ports and paths as needed.
+- The backend will use the mounted config and persist uploads/logs/database.
+
+---
+
+## Option 2: Pull from Docker Hub
+
+If you prefer not to build the image yourself, you can pull a prebuilt image from Docker Hub.
+
+### 1. Pull the Image
+
+```bash
+docker pull danonektm/simp:latest
+```
+
+### 2. Prepare Configuration & Volumes
+
+- Copy and edit `backend/config.yaml` as needed.
+- Create directories for persistent storage and logs:
+
+```bash
+mkdir -p ./simp_app/logs ./simp_app/storage
+```
+
+### 3. Run the Backend Container
+
+```bash
+docker run -d \
+  --name simp \
+  -p 3000:3000 \
+  -v $(pwd)/backend/config.yaml:/app/config.yaml \
+  -v $(pwd)/simp_app/storage:/app/storage \
+  -v $(pwd)/simp_app/logs:/app/logs \
+  -v $(pwd)/simp_app/simp.db:/app/simp.db \
+  danonektm/simp:latest
+```
+
+- Adjust ports and paths as needed.
+
+---
+
+## (Optional) Use Docker Compose
+
+See [Docker Compose Guide](./docker-compose.mdx) for a full-stack example.
+
+## Security & Tips
+
+- Change all default secrets and passwords in `config.yaml`.
+- Use Docker secrets or environment variables for sensitive values in production.
+- Mount volumes for persistent data.
+- Use a reverse proxy (e.g., Nginx, Traefik) for HTTPS and domain routing.
