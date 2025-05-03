@@ -10,16 +10,18 @@ RUN npm run build
 FROM golang:1.24-alpine AS backend-builder
 WORKDIR /app/backend
 
-# Install build dependencies for SQLite
-RUN apk add --no-cache gcc musl-dev
+# Install build dependencies for SQLite and cross-compilation
+RUN apk add --no-cache gcc musl-dev g++ make
 
 COPY backend/go.* ./
 RUN go mod download
 COPY backend/ .
-# Enable CGO and set target platform
+
+# Enable CGO and set target platform based on build platform
+ARG TARGETARCH
 ENV CGO_ENABLED=1
 ENV GOOS=linux
-ENV GOARCH=amd64
+ENV GOARCH=${TARGETARCH}
 RUN go build -o simp cmd/main.go
 
 # Final stage
