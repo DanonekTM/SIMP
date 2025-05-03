@@ -1,0 +1,275 @@
+---
+title: Stats & Analytics
+description: Endpoints for image stats, analytics, and privacy controls.
+icon: ChartBar
+---
+
+# Stats & Analytics
+
+These endpoints provide analytics, stats, and privacy controls for images. All endpoints require authentication.
+
+## GET /api/stats/&#123;id&#125;
+
+Get stats for a specific image.
+
+- **Method:** GET
+- **Path:** `/api/stats/{id}`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Example
+
+```bash
+curl http://localhost:8080/api/stats/1
+```
+
+### Response
+
+```json
+{
+  "image": {
+    "id": 1,
+    "uuid": "string",
+    "filename": "string",
+    "extension": "string",
+    "size": 12345,
+    "uploadedAt": "2024-01-01T00:00:00Z",
+    "isPrivate": false,
+    "privateKey": "string",
+    "views": 10
+  },
+  "views": [
+    {
+      "id": 1,
+      "image_id": 1,
+      "ip": "1.2.3.4",
+      "country_name": "Country",
+      "country_code": "CC",
+      "user_agent": "UA",
+      "viewed_at": "2024-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+### Errors
+
+- 401: Not authenticated
+- 404: Image not found
+- 500: Internal server error
+
+---
+
+## POST /api/privacy/&#123;id&#125;
+
+Toggle privacy for an image. Requires CSRF token.
+
+- **Method:** POST
+- **Path:** `/api/privacy/{id}`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Headers
+
+- `X-CSRF-Token`: CSRF token from login/refresh
+
+### Example
+
+```bash
+curl -X POST \
+  -H "X-CSRF-Token: <csrf_token>" \
+  http://localhost:8080/api/privacy/1
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "is_private": true,
+  "private_key": "string"
+}
+```
+
+### Errors
+
+- 401: Not authenticated
+- 403: Invalid CSRF token
+- 404: Image not found
+- 500: Internal server error
+
+---
+
+## GET /api/stats/disk-usage
+
+Get disk usage stats.
+
+- **Method:** GET
+- **Path:** `/api/stats/disk-usage`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Example
+
+```bash
+curl http://localhost:8080/api/stats/disk-usage
+```
+
+### Response
+
+```json
+{
+  "app_storage": 0.00023579318076372147,
+  "free": 0.19507670681923628,
+  "is_full_storage": false,
+  "percentage": 0.12072610855102539,
+  "storage_limit": "200MB",
+  "total": 0.1953125,
+  "used": 0.00023579318076372147
+}
+```
+
+### Errors
+
+- 401: Not authenticated
+- 500: Internal server error
+
+---
+
+## GET /api/stats/views
+
+Get global views data for the graph visualization.
+
+- **Method:** GET
+- **Path:** `/api/stats/views`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Example
+
+```bash
+curl http://localhost:8080/api/stats/views
+```
+
+### Response
+
+```json
+[
+  { "date": "2025-04-03", "views": 0 },
+  { "date": "2025-04-04", "views": 2 },
+  { "date": "2025-04-05", "views": 1 }
+]
+```
+
+### Errors
+
+- 401: Not authenticated
+- 500: Internal server error
+
+---
+
+## GET /api/stats/country-views
+
+Get views by country.
+
+- **Method:** GET
+- **Path:** `/api/stats/country-views`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Example
+
+```bash
+curl http://localhost:8080/api/stats/country-views
+```
+
+### Response
+
+```json
+[
+  {
+    "country": "United Kingdom",
+    "code": "gb",
+    "views": 7,
+    "percentage": 70
+  },
+  {
+    "country": "United States",
+    "code": "us",
+    "views": 3,
+    "percentage": 30
+  }
+]
+```
+
+### Errors
+
+- 401: Not authenticated
+- 500: Internal server error
+
+---
+
+## GET /api/stats/recent-views
+
+Get recent image views.
+
+- **Method:** GET
+- **Path:** `/api/stats/recent-views`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Example
+
+```bash
+curl http://localhost:8080/api/stats/recent-views
+```
+
+### Response
+
+```json
+{
+  "views": [
+    {
+      "id": 20,
+      "imageId": 11,
+      "imageUuid": "uuid",
+      "ip": "IP REDACTED",
+      "country": "GB",
+      "country_name": "United Kingdom",
+      "country_code": "GB",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0",
+      "viewedAt": "2025-04-28T00:49:08Z"
+    }
+  ]
+}
+```
+
+### Errors
+
+- 401: Not authenticated
+- 500: Internal server error
+
+---
+
+## GET /api/stats/dashboard
+
+Get dashboard stats summary.
+
+- **Method:** GET
+- **Path:** `/api/stats/dashboard`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Example
+
+```bash
+curl http://localhost:8080/api/stats/dashboard
+```
+
+### Response
+
+```json
+{
+  "private_images": 1,
+  "total_images": 4,
+  "total_views": 12
+}
+```
+
+### Errors
+
+- 401: Not authenticated
+- 500: Internal server error

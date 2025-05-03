@@ -1,0 +1,221 @@
+---
+title: Images
+description: Endpoints for uploading, deleting, listing, and accessing images.
+icon: Image
+---
+
+# Images
+
+These endpoints allow you to upload, delete, list, and access images.
+
+## POST /api/upload
+
+Upload an image file. Requires a valid upload key.
+
+- **Method:** POST
+- **Path:** `/api/upload`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Headers
+
+- `X-CSRF-Token`: CSRF token from login/refresh
+
+### Form Data
+
+- `file`: Image file (required)
+
+### Response
+
+```json
+{
+  "id": 1,
+  "uuid": "string",
+  "filename": "string",
+  "extension": "string",
+  "size": 12345,
+  "uploadedAt": "2024-01-01T00:00:00Z",
+  "isPrivate": false,
+  "privateKey": "string",
+  "views": 0,
+  "url": "/uuid.ext",
+  "full_link": "http://domain/uuid.ext"
+}
+```
+
+### Example
+
+```bash
+curl -X POST \
+  -H "X-CSRF-Token: <csrf_token>" \
+  -F "file=@/path/to/image.png" \
+  http://localhost:8080/api/upload
+```
+
+### Errors
+
+- 400: Invalid request, file too large, file type not allowed, storage limit reached
+- 401: Not authenticated
+- 403: Invalid CSRF token
+- 500: Internal server error
+
+---
+
+## DELETE /api/delete/&#123;uuid&#125;
+
+Delete an image by UUID. Requires authentication and CSRF token.
+
+- **Method:** DELETE
+- **Path:** `/api/delete/{uuid}`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Headers
+
+- `X-CSRF-Token`: CSRF token from login/refresh
+
+### Example
+
+```bash
+curl -X DELETE \
+  -H "X-CSRF-Token: <csrf_token>" \
+  http://localhost:8080/api/delete/abc123
+```
+
+### Response
+
+- 200: Image deleted
+- 401: Not authenticated
+- 403: Invalid CSRF token
+- 404: Image not found
+- 500: Internal server error
+
+---
+
+## GET /api/list
+
+List all images. Requires authentication.
+
+- **Method:** GET
+- **Path:** `/api/list`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Response
+
+```json
+[
+  {
+    "id": 1,
+    "uuid": "string",
+    "filename": "string",
+    "extension": "string",
+    "size": 12345,
+    "uploadedAt": "2024-01-01T00:00:00Z",
+    "isPrivate": false,
+    "privateKey": "string",
+    "views": 0,
+    "url": "/uuid.ext"
+  }
+]
+```
+
+### Example
+
+```bash
+curl http://localhost:8080/api/list
+```
+
+### Errors
+
+- 401: Not authenticated
+- 500: Internal server error
+
+---
+
+## GET /api/images/&#123;id&#125;
+
+Get image details by ID. Requires authentication.
+
+- **Method:** GET
+- **Path:** `/api/images/{id}`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Response
+
+```json
+{
+  "id": 1,
+  "uuid": "string",
+  "filename": "string",
+  "extension": "string",
+  "size": 12345,
+  "uploadedAt": "2024-01-01T00:00:00Z",
+  "isPrivate": false,
+  "privateKey": "string",
+  "views": 0,
+  "url": "/uuid.ext"
+}
+```
+
+### Example
+
+```bash
+curl http://localhost:8080/api/images/1
+```
+
+### Errors
+
+- 401: Not authenticated
+- 404: Image not found
+- 500: Internal server error
+
+---
+
+## GET /api/proxy/&#123;uuid&#125;.&#123;ext&#125;
+
+Serve an image via authenticated proxy, this request doesn't count as a view for analytics. Requires authentication.
+
+- **Method:** GET
+- **Path:** `/api/proxy/{uuid}.{ext}`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Example
+
+```bash
+curl http://localhost:8080/api/proxy/abc123.png
+```
+
+### Response
+
+- 200: Image file
+- 401: Not authenticated
+- 404: Image not found
+- 500: Internal server error
+
+---
+
+## GET /&#123;uuid&#125;.&#123;ext&#125;
+
+Serve a public or private image by UUID and extension. For private images, a key query parameter is required.
+
+- **Method:** GET
+- **Path:** `/{uuid}.{ext}`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Query Parameters (for private images)
+
+- `key`: base64-encoded private key
+
+### Example
+
+```bash
+# Public image
+curl http://localhost:8080/abc123.png
+
+# Private image
+curl http://localhost:8080/abc123.png?key=base64encodedkey
+```
+
+### Response
+
+- 200: Image file
+- 404: Image not found or invalid key
+- 500: Internal server error

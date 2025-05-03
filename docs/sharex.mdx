@@ -1,0 +1,94 @@
+---
+title: ShareX
+description: Learn how to set up ShareX to upload images directly to your S.I.M.P instance.
+icon: MonitorCog
+---
+
+# Configuring ShareX with S.I.M.P
+
+[ShareX](https://getsharex.com/) is a popular open-source screenshot and file sharing tool for Windows. You can configure ShareX to upload screenshots and files directly to your self-hosted S.I.M.P instance using its custom uploader feature.
+
+![ShareX custom image uploader](/sharex_custom_uploader.png)
+
+## Step 1: Find Your S.I.M.P Upload Key
+
+To allow ShareX to upload images, you need the **upload key** defined in your S.I.M.P `config.yaml` file.
+
+The upload key is set in your `config.yaml` file under the `upload_key` field.
+
+```yaml
+app:
+  environment: development
+  port: 3000
+  domain: "localhost:3000"
+  jwt_secret: "your-secret-key-here"
+  max_file_size: "1MB"
+  uuid_format: "^[A-Za-z0-9]{10}$"
+  upload_key: "your-upload-key-here" // [!code highlight]
+  ipinfo_token: ""
+  ...
+```
+
+Copy this value to use as your API key in ShareX.
+
+## Step 2: Create a Custom Uploader in ShareX
+
+1. Open ShareX.
+2. Go to **Destinations** > **Custom uploader settings**.
+3. Click **New** to create a new uploader.
+4. Set the **Method** to `POST`.
+5. Set the **Request URL** to your S.I.M.P upload endpoint, e.g.:
+   ```
+   https://your-simp-domain.com/api/upload
+   ```
+6. Under **Body**, select `Multipart/form-data` and add a parameter:
+   - Name: `key`
+   - Value: `upload_key` from [step above](#step-1-find-your-simp-upload-key)
+7. Set the **URL** to `{json:full_link}`, this will be used to parse the image URL from the JSON response.
+
+![ShareX custom image uploader settings](/sharex_custom_uploader_settings.png)
+
+## Step 3: Test the Uploader
+
+1. Click **Test** in the ShareX custom uploader window.
+2. If configured correctly, you should see a successful upload and receive a direct image URL.
+
+![ShareX custom image uploader test](/sharex_custom_uploader_test.gif)
+
+## Step 4: Verify the Upload in the S.I.M.P Dashboard
+
+1. Open your S.I.M.P dashboard in your browser.
+2. Navigate to the **Images** tab.
+3. You should see the ShareX logo listed as a newly uploaded image—this confirms your test upload was successful.
+
+![ShareX custom image uploader success](/sharex_custom_uploader_simp.png)
+
+## Step 5: Final Steps
+
+Now that your custom uploader is working, let’s make sure your ShareX workflow is as smooth as possible.
+
+1. **Set as Default Uploader**
+
+   - In ShareX, go to **Destinations** > **Image uploader**.
+   - Select your newly created S.I.M.P uploader from the list. This ensures all future image uploads will use your S.I.M.P instance by default.
+
+2. **Configure Post-Upload Actions**
+
+   - Go to **After upload tasks** in ShareX settings.
+   - Make sure **Copy URL to clipboard** is enabled. This way, every time you upload an image, the direct link will be automatically copied and ready to paste.
+   - Optionally, you can also enable **Open URL** if you want to preview uploads instantly.
+
+3. **Test Your Workflow**
+
+   - Take a screenshot using ShareX.
+   - After uploading, try pasting (Ctrl+V) in your browser or chat app—the image URL should be ready to go.
+   - Visit the URL to confirm your image is accessible.
+
+4. **Enjoy Seamless Uploads!**
+   - With these steps complete, you can now quickly upload screenshots and files from ShareX directly to your S.I.M.P instance, with the link instantly available for sharing.
+
+## Troubleshooting
+
+- Ensure your S.I.M.P instance is accessible from your computer.
+- Double-check your `upload_key` and endpoint URL.
+- Check S.I.M.P server logs for any errors if uploads fail.

@@ -1,0 +1,36 @@
+---
+title: Config
+description: Endpoint for retrieving backend configuration.
+icon: Cog
+---
+
+# Config
+
+This endpoint provides the current backend configuration.
+
+## GET /api/config
+
+Get the current configuration as JSON.
+
+- **Method:** GET
+- **Path:** `/api/config`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Example
+
+```bash
+curl http://localhost:8080/api/config
+```
+
+### Response
+
+```json
+{
+  "enable_ip_tracking": true | false,
+  "max_file_size": string,
+}
+```
+
+### Errors
+
+- 500: Internal server error

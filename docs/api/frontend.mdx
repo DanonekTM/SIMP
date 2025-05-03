@@ -1,0 +1,20 @@
+---
+title: Frontend & Static
+description: Serving the frontend and static files.
+icon: Monitor
+---
+
+# Frontend & Static
+
+All non-API routes are handled by the frontend or static file handler.
+
+- **Path:** `/` (catch-all except /api/\*)
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+## Behavior
+
+- Requests to `/api/*` are handled by the API.
+- Requests to `/[uuid].[ext]` are handled as image access.
+- All other requests serve the frontend (e.g., Single Page App, static assets).
+
+![Frontend routing diagram](/routing.png)

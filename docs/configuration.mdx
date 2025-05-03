@@ -1,0 +1,167 @@
+---
+title: Configuration
+description: Breakdown of config.yaml and how configuration works in the backend.
+icon: Cog
+---
+
+# Configuration
+
+The S.I.M.P backend is configured using a YAML file (`config.yaml`). This file controls all aspects of the backend, including server settings, authentication, storage, logging, CORS, and rate limiting.
+
+## Structure
+
+The configuration file is loaded at startup and used throughout the backend (see [`config`](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/config/) package).
+
+<Callout title="Enable IP Tracking & Analytics">
+  To enable IP-based analytics and geolocation, get a free IPinfo token from
+  [ipinfo.io](https://ipinfo.io/dashboard/token) and set it in your
+  configuration using the `ipinfo_token` field.
+</Callout>
+
+### Example
+
+```yaml
+app:
+  environment: development
+  port: 3000
+  domain: "localhost:3000"
+  jwt_secret: "your-secret-key-here"
+  max_file_size: "1MB"
+  uuid_format: "^[A-Za-z0-9]{10}$"
+  upload_key: "your-upload-key-here"
+  ipinfo_token: ""
+  enable_ip_tracking: true
+user:
+  username: "changeme@example.com"
+  password: "admin"
+database:
+  file: "sharex.db"
+storage:
+  base_path: "./storage"
+  max_storage: "10MB"
+  allowed_extensions:
+    - "jpg"
+    - "jpeg"
+    - "png"
+    - "gif"
+logging:
+  enabled: true
+  log_dir: "./logs"
+  debug:
+    enabled: true
+    console_output: true
+    file: "debug.log"
+  info:
+    enabled: true
+    console_output: true
+    file: "info.log"
+  warn:
+    enabled: true
+    console_output: true
+    file: "warn.log"
+  error:
+    enabled: true
+    console_output: true
+    file: "error.log"
+  max_log_size: "10MB"
+  max_log_age: 1
+  compress_logs: true
+  cleanup_schedule: 2
+cors:
+  enabled: true
+  allowed_origins:
+    - "http://localhost:3000"
+    - "http://localhost:5173"
+  allowed_methods:
+    - "GET"
+    - "POST"
+    - "DELETE"
+  allowed_headers:
+    - "Authorization"
+    - "Content-Type"
+rate_limit:
+  enabled: true
+  redis_url: "redis://simp-redis:6379"
+  default_rate:
+    requests: 100
+    period: 60
+  routes:
+    "/api/login":
+      requests: 5
+      period: 60
+    "/api/upload":
+      requests: 10
+      period: 60
+    "/api/delete":
+      requests: 10
+      period: 60
+```
+
+---
+
+## Configuration Sections
+
+### `app`
+
+| Key                | Type    | Example                 | Description                                                                          |
+| ------------------ | ------- | ----------------------- | ------------------------------------------------------------------------------------ |
+| environment        | string  | `development`           | `development` or `production`. Controls logging and error output.                    |
+| port               | number  | `3000`                  | Port the backend listens on.                                                         |
+| domain             | string  | `localhost:3000`        | Used for generating full URLs in API responses.                                      |
+| jwt_secret         | string  | `your-secret-key-here`  | Secret for signing JWT tokens. **Change in production!**                             |
+| max_file_size      | string  | `1MB`                   | Maximum upload size per file (e.g., `1MB`).                                          |
+| uuid_format        | string  | `^[A-Za-z0-9]{10}$`     | Regex for allowed image UUIDs.                                                       |
+| upload_key         | string  | `your-upload-key-here`  | Key required for uploading images. **Change in production!**                         |
+| ipinfo_token       | string  | `api_token_from_ipinfo` | IP Info token, get [here](https://ipinfo.io/dashboard/token) used for IP Geolocation |
+| enable_ip_tracking | boolean | `true`                  | Enables/disables IP analytics.                                                       |
+
+### `user`
+
+| Key      | Type   | Example                | Description                               |
+| -------- | ------ | ---------------------- | ----------------------------------------- |
+| username | string | `changeme@example.com` | Admin username for login.                 |
+| password | string | `admin`                | Admin password. **Change in production!** |
+
+### `database`
+
+| Key  | Type   | Example     | Description                   |
+| ---- | ------ | ----------- | ----------------------------- |
+| file | string | `sharex.db` | Path to SQLite database file. |
+
+### `storage`
+
+| Key                | Type     | Example           | Description                                   |
+| ------------------ | -------- | ----------------- | --------------------------------------------- |
+| base_path          | string   | `./storage`       | Directory for storing uploaded images.        |
+| max_storage        | string   | `10MB`            | Maximum total storage allowed (e.g., `10MB`). |
+| allowed_extensions | string[] | `[jpg, png, ...]` | List of allowed file extensions for uploads.  |
+
+### `logging`
+
+| Key                   | Type    | Example  | Description                                      |
+| --------------------- | ------- | -------- | ------------------------------------------------ |
+| enabled               | boolean | `true`   | Enable/disable logging.                          |
+| log_dir               | string  | `./logs` | Directory for log files.                         |
+| debug/info/warn/error | object  | `{...}`  | Per-level logging config (enable, output, file). |
+| max_log_size          | string  | `10MB`   | Max size per log file.                           |
+| max_log_age           | number  | `1`      | Days to keep logs.                               |
+| compress_logs         | boolean | `true`   | Whether to compress old logs.                    |
+| cleanup_schedule      | number  | `2`      | Minutes between log cleanup runs.                |
+
+### `cors`
+
+| Key             | Type     | Example                         | Description                   |
+| --------------- | -------- | ------------------------------- | ----------------------------- |
+| enabled         | boolean  | `true`                          | Enable/disable CORS.          |
+| allowed_origins | string[] | `[http://localhost:3000]`       | List of allowed origins.      |
+| allowed_methods | string[] | `[GET, POST, DELETE]`           | List of allowed HTTP methods. |
+| allowed_headers | string[] | `[Authorization, Content-Type]` | List of allowed headers.      |
+
+### `rate_limit`
+
+| Key          | Type    | Example                         | Description                                              |
+| ------------ | ------- | ------------------------------- | -------------------------------------------------------- |
+| enabled      | boolean | `true`                          | Enable/disable rate limiting.                            |
+| redis_url    | string  | `redis://localhost:6379`        | Redis connection string for rate limiting.               |
+| default_rate | object  | `{ requests: 100, period: 60 }` | Default rate limit (requests per period in seconds).     |
+| routes       | object  | `{ "/api/login": ... }`         | Per-route overrides (e.g., `/api/login`, `/api/upload`). |

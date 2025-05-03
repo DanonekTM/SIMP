@@ -1,0 +1,145 @@
+---
+title: Authentication
+description: Endpoints for user authentication and token management.
+icon: Lock
+---
+
+# Authentication
+
+Authentication is handled via secure HTTP-only cookies for JWT tokens and CSRF protection.
+
+## POST /api/login
+
+Authenticate a user and receive authentication tokens via cookies.
+
+- **Method:** POST
+- **Path:** `/api/login`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Request Body
+
+```json
+{
+  "username": "string",
+  "password": "string"
+}
+```
+
+### Response
+
+```json
+{
+  "username": "string"
+}
+```
+
+### Cookies Set
+
+- `access_token`: JWT access token (HTTP-only)
+- `refresh_token`: JWT refresh token (HTTP-only)
+- `csrf_token`: CSRF protection token
+- `upload_key`: Upload key for image uploads (HTTP-only)
+
+### Example
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"username":"user","password":"pass"}' \
+  http://localhost:8080/api/login
+```
+
+### Errors
+
+- 400: Invalid request
+- 401: Invalid credentials
+- 500: Internal server error
+
+---
+
+## POST /api/logout
+
+Logout the current user by clearing authentication cookies.
+
+- **Method:** POST
+- **Path:** `/api/logout`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Response
+
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+### Example
+
+```bash
+curl -X POST http://localhost:8080/api/logout
+```
+
+---
+
+## POST /api/refresh
+
+Refresh the access token using the refresh token cookie.
+
+- **Method:** POST
+- **Path:** `/api/refresh`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Response
+
+```json
+{
+  "success": true,
+  "username": "string"
+}
+```
+
+### Cookies Updated
+
+- `access_token`: New JWT access token
+- `refresh_token`: New JWT refresh token
+- `csrf_token`: New CSRF token
+
+### Example
+
+```bash
+curl -X POST http://localhost:8080/api/refresh
+```
+
+### Errors
+
+- 401: No refresh token or invalid refresh token
+- 500: Internal server error
+
+---
+
+## POST /api/verify
+
+Verify the current authentication state.
+
+- **Method:** POST
+- **Path:** `/api/verify`
+- **Source:** [handlers.go](https://github.com/DanonekTM/SIMP/blob/main/backend/internal/handlers/handlers.go)
+
+### Response
+
+```json
+{
+  "username": "string"
+}
+```
+
+### Example
+
+```bash
+curl -X POST http://localhost:8080/api/verify
+```
+
+### Errors
+
+- 401: Not authenticated
+- 500: Internal server error

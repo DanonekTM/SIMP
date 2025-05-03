@@ -1,0 +1,60 @@
+---
+title: Quick Start
+description: Get started with S.I.M.P in minutes.
+icon: Zap
+---
+
+import {
+  HomeIcon,
+  LaptopIcon,
+  ServerIcon,
+  BookIcon,
+  CogIcon,
+} from "lucide-react";
+
+# Quick Start
+
+Get up and running with S.I.M.P in just a few steps. Use the cards below to jump to the most important sections of the documentation.
+
+<Cards>
+  <Card
+    icon={<LaptopIcon />}
+    href="https://demo.usesimp.app/admin"
+    title="Demo"
+  >
+    Check out S.I.M.P before you host it yourself!
+  </Card>
+  <Card icon={<ServerIcon />} href="/docs/deployment" title="Deployment">
+    Learn how to deploy S.I.M.P on bare metal, Docker, or Compose.
+  </Card>
+  <Card icon={<BookIcon />} href="/docs/api" title="API Reference">
+    Explore all API endpoints and usage examples.
+  </Card>
+  <Card icon={<CogIcon />} href="/docs/configuration" title="Configuration">
+    Understand and customize your config.yaml.
+  </Card>
+</Cards>
+
+---
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/DanonekTM/SIMP.git && cd SIMP
+```
+
+## 2. Configure SIMP
+
+Edit `backend/config.yaml` to match your environment. See the [Configuration Guide](/docs/configuration).
+
+## 3. Deploy
+
+Choose a deployment method:
+
+- [Bare Metal](/docs/deployment/bare-metal)
+- [Docker](/docs/deployment/docker)
+- [Docker Compose](/docs/deployment/docker-compose)
+
+## 4. Access the API
+
+See the [API Reference](/docs/api) for endpoints and usage.

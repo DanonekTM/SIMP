@@ -48,9 +48,7 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	Username  string `json:"username"`
-	CSRFToken string `json:"csrf_token"`
-	UploadKey string `json:"upload_key"`
+	Username string `json:"username"`
 }
 
 type UploadResponse struct {
