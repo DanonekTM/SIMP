@@ -109,7 +109,7 @@ rate_limit:
 | port               | number  | `3000`                  | Port the backend listens on.                                                         |
 | domain             | string  | `localhost:3000`        | Used for generating full URLs in API responses.                                      |
 | jwt_secret         | string  | `your-secret-key-here`  | Secret for signing JWT tokens. **Change in production!**                             |
-| max_file_size      | string  | `1MB`                   | Maximum upload size per file (e.g., `1MB`).                                          |
+| max_file_size      | string  | `1MB`                   | Maximum upload size per file (e.g., `1B`, `1KB`, `1MB`, `1GB`, `1TB`).               |
 | uuid_format        | string  | `^[A-Za-z0-9]{10}$`     | Regex for allowed image UUIDs.                                                       |
 | upload_key         | string  | `your-upload-key-here`  | Key required for uploading images. **Change in production!**                         |
 | ipinfo_token       | string  | `api_token_from_ipinfo` | IP Info token, get [here](https://ipinfo.io/dashboard/token) used for IP Geolocation |
@@ -130,11 +130,11 @@ rate_limit:
 
 ### `storage`
 
-| Key                | Type     | Example           | Description                                   |
-| ------------------ | -------- | ----------------- | --------------------------------------------- |
-| base_path          | string   | `./storage`       | Directory for storing uploaded images.        |
-| max_storage        | string   | `10MB`            | Maximum total storage allowed (e.g., `10MB`). |
-| allowed_extensions | string[] | `[jpg, png, ...]` | List of allowed file extensions for uploads.  |
+| Key                | Type     | Example           | Description                                                                          |
+| ------------------ | -------- | ----------------- | ------------------------------------------------------------------------------------ |
+| base_path          | string   | `./storage`       | Directory for storing uploaded images.                                               |
+| max_storage        | string   | `10MB`            | Maximum total storage allowed (e.g., (e.g., `10B`, `10KB`, `10MB`, `10GB`, `10TB`)). |
+| allowed_extensions | string[] | `[jpg, png, ...]` | List of allowed file extensions for uploads.                                         |
 
 ### `logging`
 
@@ -159,9 +159,9 @@ rate_limit:
 
 ### `rate_limit`
 
-| Key          | Type    | Example                         | Description                                              |
-| ------------ | ------- | ------------------------------- | -------------------------------------------------------- |
-| enabled      | boolean | `true`                          | Enable/disable rate limiting.                            |
-| redis_url    | string  | `redis://localhost:6379`        | Redis connection string for rate limiting.               |
-| default_rate | object  | `{ requests: 100, period: 60 }` | Default rate limit (requests per period in seconds).     |
-| routes       | object  | `{ "/api/login": ... }`         | Per-route overrides (e.g., `/api/login`, `/api/upload`). |
+| Key          | Type    | Example                         | Description                                               |
+| ------------ | ------- | ------------------------------- | --------------------------------------------------------- |
+| enabled      | boolean | `true`                          | Enable/disable rate limiting.                             |
+| redis_url    | string  | `redis://localhost:6379`        | Redis connection string for rate limiting.                |
+| default_rate | object  | `{ requests: 100, period: 60 }` | Default rate limit (requests per period in seconds).      |
+| routes       | object  | `{ "/api/login": ... }`         | Per-route overrides (e.g., `/api/proxy/`, `/api/upload`). |
