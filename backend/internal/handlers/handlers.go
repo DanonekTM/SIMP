@@ -191,9 +191,8 @@ func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"success":    true,
-		"username":   claims.Username,
-		"csrf_token": csrfToken,
+		"success":  true,
+		"username": claims.Username,
 	})
 }
 
@@ -321,7 +320,11 @@ func (h *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 			"extension": ext,
 			"filename":  header.Filename,
 		})
-		http.Error(w, "File type not allowed", http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": fmt.Sprintf("File type '.%s' not allowed. Allowed types: %s", ext, strings.Join(h.config.Storage.AllowedExtensions, ", ")),
+		})
 		return
 	}
 
