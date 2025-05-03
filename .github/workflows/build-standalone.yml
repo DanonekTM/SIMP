@@ -1,0 +1,147 @@
+name: Build Simp App
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'App version'
+        required: true
+        default: '1.0.0'
+      release:
+        description: 'Create GitHub Release'
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24.1'
+          cache: false
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+          mv dist ../backend/frontend/
+
+      - name: Build Backend for Linux
+        run: |
+          cd backend
+          go build -o simp-server ./cmd/main.go
+
+      - name: Prepare Files for Linux
+        run: |
+          cd backend
+          cp -r ../docker/simp_app/* .
+
+      - name: Upload Linux Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: simp-app-linux-${{ github.event.inputs.version }}
+          path: |
+            backend/simp-server
+            backend/simp.db
+            backend/config.yaml
+            backend/frontend
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24.1'
+          cache: false
+
+      - name: Build Frontend
+        shell: pwsh
+        run: |
+          cd frontend
+          npm install
+          npm run build
+          $source = "$(Resolve-Path dist)"
+          $destination = "$(Resolve-Path ../backend/frontend)/dist"
+          Move-Item -Path $source -Destination $destination -Force
+
+      - name: Build Backend for Windows
+        run: |
+          cd backend
+          go build -o simp-server.exe ./cmd/main.go
+        shell: cmd
+
+      - name: Prepare Files for Windows
+        run: |
+          cd backend
+          xcopy ..\docker\simp_app\* . /E /I
+        shell: cmd
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: simp-app-windows-${{ github.event.inputs.version }}
+          path: |
+            backend/simp-server.exe
+            backend/simp.db
+            backend/config.yaml
+            backend/frontend
+
+  create-release:
+    needs: [build-linux, build-windows]
+    if: ${{ github.event.inputs.release == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Linux Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: simp-app-linux-${{ github.event.inputs.version }}
+          path: ./linux
+
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: simp-app-windows-${{ github.event.inputs.version }}
+          path: ./windows
+
+      - name: Create ZIPs
+        run: |
+          cd linux
+          zip -r ../simp-app-linux-${{ github.event.inputs.version }}.zip *
+          cd ../windows
+          zip -r ../simp-app-windows-${{ github.event.inputs.version }}.zip *
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: v${{ github.event.inputs.version }}
+          name: v${{ github.event.inputs.version }}
+          artifacts: |
+            simp-app-linux-${{ github.event.inputs.version }}.zip
+            simp-app-windows-${{ github.event.inputs.version }}.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
