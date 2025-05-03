@@ -1,0 +1,77 @@
+---
+title: Standalone + Ngrok
+description: How to deploy S.I.M.P as a standalone application with Ngrok for public access.
+icon: Terminal
+---
+
+# Standalone + Ngrok Deployment
+
+This guide will walk you through setting up S.I.M.P as a standalone application and exposing it to the internet using Ngrok.
+
+## Prerequisites
+
+- Download the latest standalone release for your operating system from the [GitHub releases page](https://github.com/DanonekTM/SIMP/releases)
+- [Ngrok account](https://ngrok.com) (free tier is sufficient)
+- Ngrok CLI installed on your system
+
+## Steps
+
+### 1. Download and Extract
+
+1. Download the appropriate standalone release for your operating system
+2. Extract the archive to your desired location
+
+### 2. Configure S.I.M.P
+
+1. Locate the `config.yaml` file in the extracted directory
+2. Configure the file according to your needs (refer to the [Configuration Guide](../configuration.mdx))
+3. Make sure to set the `server.host` to `localhost` or `127.0.0.1` and choose a port (default is `3000`)
+
+### 3. Set Up Ngrok
+
+1. Sign up for a free Ngrok account if you haven't already
+2. Install Ngrok following the [official documentation](https://ngrok.com/download)
+3. Authenticate Ngrok with your auth token:
+   ```bash
+   ngrok config add-authtoken YOUR_AUTH_TOKEN
+   ```
+
+### 4. Start S.I.M.P
+
+1. Run the standalone executable:
+   - On Windows: Double click the `.exe` file or run it from command prompt
+   - On Linux: Make the file executable with `chmod +x ./simp` and run it with `./simp`
+2. Verify that S.I.M.P is running by accessing `http://localhost:3000` (or your configured port)
+
+### 5. Start Ngrok Tunnel
+
+1. Open a new terminal window
+2. Start Ngrok, pointing to your S.I.M.P port, set in `config.yaml`:
+   ```bash
+   ngrok http 3000
+   ```
+3. Ngrok will provide you with a public URL (e.g., `https://random-string.ngrok.io`)
+
+## Important Notes
+
+- The Ngrok URL changes every time you restart Ngrok (unless you have a paid plan)
+- Update your ShareX configuration to use the new Ngrok URL
+- For production use, consider:
+  - Using a paid Ngrok plan for a fixed domain
+  - Setting up proper authentication
+  - Using a reverse proxy like Nginx or Caddy instead
+
+## Security Considerations
+
+- Always use HTTPS (Ngrok provides this by default)
+- Set up authentication in your `config.yaml`
+- Be cautious with file permissions
+- Monitor your Ngrok dashboard for unusual traffic
+
+## Troubleshooting
+
+- If S.I.M.P isn't accessible via Ngrok:
+  - Verify S.I.M.P is running locally
+  - Check if the ports match in both S.I.M.P config and Ngrok command
+  - Ensure your firewall isn't blocking the connections
+  - Check Ngrok's status in their dashboard
