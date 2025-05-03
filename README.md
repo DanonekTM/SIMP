@@ -7,7 +7,7 @@ A modern, secure, and feature-rich image hosting platform built with Go and Reac
 [![Go Version](https://img.shields.io/badge/Go-1.24.1-blue.svg)](https://go.dev/)
 [![License](https://img.shields.io/badge/License-AGPLv3-blue.svg)](LICENSE)
 
-[Documentation](https://usesimp.app/docs) | [Live Demo](https://demo.usesimp.app)
+[Documentation](https://usesimp.app/docs) | [Live Demo](https://demo.usesimp.app/admin)
 
 ## Features
 
