@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home | S.I.M.P</title>
+  <script>
+    const theme = localStorage.getItem('theme') || 'dark';
+    if (theme === 'dark') document.documentElement.classList.add('dark');
+  </script>
+  <style>
+    h1,img{margin-bottom:1rem}:root{--background:0 0% 100%;--foreground:0 0% 0%;--card:0 0% 100%;--card-foreground:0 0% 0%;--primary:0 0% 0%;--primary-foreground:0 0% 100%;--secondary:0 0% 96%;--secondary-foreground:0 0% 0%;--muted:0 0% 96%;--muted-foreground:0 0% 45%;--accent:0 0% 96%;--accent-foreground:0 0% 0%;--destructive:0 84.2% 60.2%;--destructive-foreground:0 0% 98%;--border:0 0% 90%;--radius:0.5rem}.dark{--background:0 0% 0%;--foreground:0 0% 100%;--card:0 0% 0%;--card-foreground:0 0% 100%;--primary:0 0% 100%;--primary-foreground:0 0% 0%;--secondary:0 0% 15%;--secondary-foreground:0 0% 100%;--muted:0 0% 15%;--muted-foreground:0 0% 65%;--accent:0 0% 15%;--accent-foreground:0 0% 100%;--destructive:0 62.8% 30.6%;--destructive-foreground:0 0% 100%;--border:0 0% 20%}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:hsl(var(--background));color:hsl(var(--foreground));display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100vh;padding:1rem;text-align:center}img{width:150px;transition:filter .3s}.dark img{filter:invert(1)}h1{font-size:2.5em;color:hsl(var(--primary))}p{font-size:1.2em;color:hsl(var(--muted-foreground));margin-bottom:2rem}@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  </style>
+</head>
+<body>
+  <img src="logo.svg" alt="S.I.M.P Logo">
+  <h1>Welcome to S.I.M.P</h1>
+  <p>Simple Image Management Platform</p>
+</body>
+</html>

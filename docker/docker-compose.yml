@@ -1,0 +1,27 @@
+services:
+  simp:
+    container_name: simp
+    image: simp:latest
+    ports:
+      - 3000:3000 #Change ports mapped to host
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config.yaml:/app/config.yaml
+      - ./simp_app/logs:/app/logs
+      - ./simp_app/storage:/app/storage
+      - ./simp_app/simp.db:/app/simp.db
+    depends_on:
+      - simp-redis # Optional dependency, comment out if not using Redis
+
+  # Optional Redis service - comment out if not needed
+  simp-redis:
+    container_name: simp-redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+volumes:
+  redis_data:

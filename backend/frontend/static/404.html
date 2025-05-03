@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error | S.I.M.P</title>
+    <script>
+        // Check localStorage for theme
+        const theme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+    </script>
+    <style>
+       .bg-background,body{background-color:hsl(var(--background))}.container,.w-full{width:100%}:root{--background:0 0% 100%;--foreground:0 0% 0%;--card:0 0% 100%;--card-foreground:0 0% 0%;--primary:0 0% 0%;--primary-foreground:0 0% 100%;--secondary:0 0% 96%;--secondary-foreground:0 0% 0%;--muted:0 0% 96%;--muted-foreground:0 0% 45%;--accent:0 0% 96%;--accent-foreground:0 0% 0%;--destructive:0 84.2% 60.2%;--destructive-foreground:0 0% 98%;--border:0 0% 90%;--ring:0 0% 0%;--radius:0.5rem}.dark{--background:0 0% 0%;--foreground:0 0% 100%;--card:0 0% 0%;--card-foreground:0 0% 100%;--primary:0 0% 100%;--primary-foreground:0 0% 0%;--secondary:0 0% 15%;--secondary-foreground:0 0% 100%;--muted:0 0% 15%;--muted-foreground:0 0% 65%;--accent:0 0% 15%;--accent-foreground:0 0% 100%;--destructive:0 62.8% 30.6%;--destructive-foreground:0 0% 100%;--border:0 0% 20%;--ring:0 0% 100%}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:hsl(var(--foreground))}.flex{display:flex}.h-screen{height:100vh}.flex-col{flex-direction:column}.container{max-width:64rem;margin:0 auto;padding:0 1rem}.gap-4{gap:1rem}.text-center{text-align:center}.text-4xl{font-size:2.25rem;line-height:2.5rem}.font-bold{font-weight:700}.tracking-tighter{letter-spacing:-.05em}.text-muted-foreground{color:hsl(var(--muted-foreground))}.max-w-\[42rem\]{max-width:42rem}.leading-normal{line-height:1.5}.mt-4{margin-top:1rem}.inline-flex{display:inline-flex}.items-center{align-items:center}.justify-center{justify-content:center}.gap-2{gap:.5rem}.whitespace-nowrap{white-space:nowrap}.text-sm{font-size:.875rem;line-height:1.25rem}.font-medium{font-weight:500}.ring-offset-background{--tw-ring-offset-color:hsl(var(--background))}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(0.4,0,0.2,1);transition-duration:150ms}.focus-visible\:outline-none:focus-visible{outline:0}.focus-visible\:ring-2:focus-visible{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.focus-visible\:ring-ring:focus-visible{--tw-ring-color:hsl(var(--ring))}.focus-visible\:ring-offset-2:focus-visible{--tw-ring-offset-width:2px}.disabled\:pointer-events-none:disabled{pointer-events:none}.disabled\:opacity-50:disabled{opacity:.5}.bg-primary{background-color:hsl(var(--primary))}.text-primary-foreground{color:hsl(var(--primary-foreground))}.hover\:bg-primary\/90:hover{background-color:hsl(var(--primary) / .9)}.h-11{height:2.75rem}.rounded-md{border-radius:.375rem}.px-8{padding-left:2rem;padding-right:2rem}button{border:none;cursor:pointer;background:0 0;font:inherit;color:inherit}@media (min-width:640px){.sm\:text-5xl{font-size:3rem;line-height:1}.sm\:text-xl{font-size:1.25rem;line-height:1.75rem}.sm\:leading-8{line-height:2rem}}@media (min-width:768px){.md\:text-6xl{font-size:3.75rem;line-height:1}}@media (min-width:1024px){.lg\:text-7xl{font-size:4.5rem;line-height:1}}
+    </style>
+</head>
+<body>
+    <div class="flex h-screen w-full flex-col items-center justify-center bg-background">
+        <div class="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
+            <h1 class="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">404</h1>
+            <p class="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">Oops! The page you're looking for doesn't exist.</p>
+            <button onclick="window.location.href='/'" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md px-8 mt-4">Back to Home</button>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,79 @@
+app:
+  environment: development # development or production
+  port: 3000
+  domain: "localhost:3000" # Domain for full URLs
+  jwt_secret: "your-secret-key-here" # Change this in production
+  max_file_size: "10MB" # Human-readable size (e.g., "10MB", "5GB")
+  uuid_format: "^[A-Za-z0-9]{10}$" # 10 characters alphanumeric, must match entire string
+  upload_key: "your-upload-key" # Change this in production
+  ipinfo_token: "your-ipinfo-api-token" # Add your IPinfo API token here (get it at https://ipinfo.io/signup)
+  enable_ip_tracking: false # Enable or disable IP tracking if you have populated the ipinfo_token
+
+user:
+  username: "youremail@example.com"
+  password: "password" # Change this in production
+
+database:
+  file: "simp.db" # Database file path
+
+storage:
+  base_path: "./storage"
+  max_storage: "500MB" # Maximum total storage size for all files
+  allowed_extensions:
+    - "jpg"
+    - "jpeg"
+    - "png"
+    - "gif"
+
+logging:
+  enabled: true
+  log_dir: "./logs"
+  debug:
+    enabled: true
+    console_output: true
+    file: "debug.log"
+  info:
+    enabled: true
+    console_output: true
+    file: "info.log"
+  warn:
+    enabled: true
+    console_output: true
+    file: "warn.log"
+  error:
+    enabled: true
+    console_output: true
+    file: "error.log"
+  max_log_size: "50MB" # Human-readable size (e.g., "10MB", "5GB")
+  max_log_age: 7 # days
+  compress_logs: true
+  cleanup_schedule: 30 # minutes between cleanup runs
+
+cors:
+  enabled: true
+  allowed_origins:
+    - "http://localhost:3000" # modify origin for production
+  allowed_methods:
+    - "GET"
+    - "POST"
+    - "DELETE"
+  allowed_headers:
+    - "Authorization"
+    - "Content-Type"
+
+rate_limit:
+  enabled: false
+  redis_url: "redis://simp-redis:6379" # modify for production
+  default_rate:
+    requests: 100
+    period: 60 # 1 minute
+  routes:
+    "/api/login":
+      requests: 5
+      period: 60 # 5 requests per minute
+    "/api/upload":
+      requests: 10
+      period: 60 # 10 requests per minute
+    "/api/delete":
+      requests: 10
+      period: 60 # 10 requests per minute

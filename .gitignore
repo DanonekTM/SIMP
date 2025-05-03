@@ -1,0 +1,32 @@
+# Build outputs
+/frontend/dist/
+/backend/frontend/dist/
+
+# Executables
+/backend/simp.exe
+/backend/simp
+*.exe
+
+# Storage and Logs
+/backend/storage/
+/backend/logs/
+
+# Node.js dependencies
+**/node_modules/
+**/dist/
+**/build/
+
+# Logs
+**/logs/
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Env files
+.env
+.env.*
